@@ -25,24 +25,9 @@ addMatrix : Num numType =>
 addMatrix [] [] = []
 addMatrix (x :: xs) (y :: ys) = addRow x y :: addMatrix xs ys
 
-mulRow : Num numType =>
-         Vect cols numType ->
-         Vect cols numType ->
-         Vect cols numType
-mulRow xs ys = zipWith (*) xs ys
-
-mulMatrix : Num numType =>
-            Vect rows (Vect cols numType) ->
-            Vect rows (Vect cols numType) ->
-            Vect rows (Vect cols numType)
-mulMatrix [] [] = []
-mulMatrix (x :: xs) (y :: ys) = mulRow x y :: mulMatrix xs ys
-
-
 
 createEmpties : {n : Nat} -> Vect n (Vect 0 a)
 createEmpties = replicate n []
-
 
 transposeMatrix : {n : Nat} -> Vect m (Vect n elem) -> Vect n (Vect m elem)
 transposeMatrix [] = createEmpties
@@ -54,4 +39,31 @@ transposeMatrix (x :: xs) = let xsTrans = transposeMatrix xs in
                   Vect s (Vect (S k) a)
     transHelper [] [] = []
     transHelper (x :: xs) (y :: ys) = (x :: y) :: transHelper xs ys
+
+transposeMatrix' : {n : Nat} -> Vect m (Vect n elem) -> Vect n (Vect m elem)
+transposeMatrix' [] = createEmpties
+transposeMatrix' (x :: xs) = let xsTrans = transposeMatrix xs in
+                                zipWith (::) x xsTrans
+
+mulRow : Num numType => Vect n numType -> Vect p (Vect n numType) -> Vect p numType
+mulRow _ [] = []
+mulRow xs (y :: ys) =  sum (zipWith (*) xs y) :: mulRow xs ys
+
+go : Num numType =>
+     Vect m (Vect n numType) ->
+     Vect p (Vect n numType) ->
+     Vect m (Vect p numType)
+go [] _ = []
+go (x :: xs) ys = mulRow x ys :: go xs ys
+
+mulMatrix : Num numType =>
+            {p : Nat} ->
+            Vect m (Vect n numType) ->
+            Vect n (Vect p numType) ->
+            Vect m (Vect p numType)
+mulMatrix xs ys = let transYs = transposeMatrix' ys in
+                      go xs transYs
+
+
+
 
