@@ -46,3 +46,20 @@ mapV : (a -> b) -> Vect n a -> Vect n b
 mapV f [] = []
 mapV f (x :: xs) = f x :: mapV f xs
 
+tryIndex : {n : Nat} -> Integer -> Vect n a -> Maybe a
+tryIndex x xs = case integerToFin x n of
+                     Nothing => Nothing
+                     (Just idx) => Just (index idx xs)
+
+vectTake : (n : Nat) -> Vect (n + m) a -> Vect n a
+vectTake Z xs = []
+vectTake (S k) (x :: xs) = x :: (vectTake k xs)
+
+sumEntries : Num a => {n : Nat} -> (pos : Integer) -> Vect n a -> Vect n a -> Maybe a
+sumEntries pos xs ys = case integerToFin pos n of
+                            Nothing => Nothing
+                            (Just idx) => Just (index idx xs + index idx ys)
+
+
+
+
