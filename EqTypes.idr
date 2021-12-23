@@ -102,8 +102,6 @@ headUnequal : DecEq a => {xs : Vect n a} -> {ys : Vect n a} ->
 headUnequal contra Refl = contra Refl
 
 tailUnequal : DecEq a => {xs : Vect n a} -> {ys : Vect n a} ->
-                         (contra : (xs = xs) -> Void) -> ((x :: xs) = (y :: ys)) -> Void
+                         (contra : (xs = ys) -> Void) -> ((x :: xs) = (y :: ys)) -> Void
 tailUnequal contra Refl = contra Refl
 
-DecEq a => DecEq (Vect n a) where
-  decEq xs ys = ?decEq_rhs
